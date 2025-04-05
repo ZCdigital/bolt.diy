@@ -19,45 +19,46 @@ export default class AmazonBedrockProvider extends BaseProvider {
     apiTokenKey: 'AWS_BEDROCK_CONFIG',
   };
 
+  // 「Due to the use of the Converse API, the actual maximum tokens that can be set is lower than expected.
   staticModels: ModelInfo[] = [
     {
-      name: 'anthropic.claude-3-7-sonnet-20250219-v1:0',
+      name: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
       label: 'Claude 3.7 Sonnet (Bedrock)',
       provider: 'AmazonBedrock',
-      maxTokenAllowed: 200000,
+      maxTokenAllowed: 131072,
     },
     {
-      name: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+      name: 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
       label: 'Claude 3.5 Sonnet v2 (Bedrock)',
       provider: 'AmazonBedrock',
-      maxTokenAllowed: 200000,
+      maxTokenAllowed: 8192,
     },
     {
-      name: 'anthropic.claude-3-5-sonnet-20240620-v1:0',
+      name: 'us.anthropic.claude-3-5-sonnet-20240620-v1:0',
       label: 'Claude 3.5 Sonnet (Bedrock)',
       provider: 'AmazonBedrock',
       maxTokenAllowed: 4096,
     },
     {
-      name: 'anthropic.claude-3-sonnet-20240229-v1:0',
+      name: 'us.anthropic.claude-3-sonnet-20240229-v1:0',
       label: 'Claude 3 Sonnet (Bedrock)',
       provider: 'AmazonBedrock',
       maxTokenAllowed: 4096,
     },
     {
-      name: 'anthropic.claude-3-haiku-20240307-v1:0',
+      name: 'us.anthropic.claude-3-haiku-20240307-v1:0',
       label: 'Claude 3 Haiku (Bedrock)',
       provider: 'AmazonBedrock',
       maxTokenAllowed: 4096,
     },
     {
-      name: 'amazon.nova-pro-v1:0',
+      name: 'us.amazon.nova-pro-v1:0',
       label: 'Amazon Nova Pro (Bedrock)',
       provider: 'AmazonBedrock',
       maxTokenAllowed: 5120,
     },
     {
-      name: 'amazon.nova-lite-v1:0',
+      name: 'us.amazon.nova-lite-v1:0',
       label: 'Amazon Nova Lite (Bedrock)',
       provider: 'AmazonBedrock',
       maxTokenAllowed: 5120,
@@ -104,7 +105,7 @@ export default class AmazonBedrockProvider extends BaseProvider {
     providerSettings?: Record<string, IProviderSetting>;
   }): LanguageModelV1 {
     const { model, serverEnv, apiKeys, providerSettings } = options;
-
+  
     const { apiKey } = this.getProviderBaseUrlAndKey({
       apiKeys,
       providerSettings: providerSettings?.[this.name],
@@ -112,14 +113,14 @@ export default class AmazonBedrockProvider extends BaseProvider {
       defaultBaseUrlKey: '',
       defaultApiTokenKey: 'AWS_BEDROCK_CONFIG',
     });
-
+  
     if (!apiKey) {
       throw new Error(`Missing API key for ${this.name} provider`);
     }
-
+  
     const config = this._parseAndValidateConfig(apiKey);
     const bedrock = createAmazonBedrock(config);
-
+  
     return bedrock(model);
   }
 }
